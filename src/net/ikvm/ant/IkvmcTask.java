@@ -27,9 +27,9 @@ import org.apache.tools.ant.types.resources.Resources;
  */
 public class IkvmcTask extends Task {
 
-    public static enum Target {
+    public enum Target {
 		exe, winexe, library, module;
-	};
+	}
 
 	private static final String IKVMC_PROC_NAME = "ikvmc.exe";
 
@@ -51,17 +51,18 @@ public class IkvmcTask extends Task {
 	private File srcPathFile;
 	private File excludesFile;
     private File remapFile;
-	private List<Reference> moduleRefs = new ArrayList<Reference>();
-	private List<Resource> resourceRefs = new ArrayList<Resource>();
-    private List<Arg> extraArguments = new ArrayList<Arg>();
+	private List<Reference> moduleRefs = new ArrayList<>();
+	private List<Resource> resourceRefs = new ArrayList<>();
+    private List<Arg> extraArguments = new ArrayList<>();
     private OutputFilter outputFilter;
 
 	public IkvmcTask () {
+		// empty constructor
 	}
 
     public void addFileSet(FileSet fileset) {
     	if (filesets == null)
-    		filesets = new ArrayList<FileSet>();
+    		filesets = new ArrayList<>();
 
     	filesets.add (fileset);
     }
@@ -160,7 +161,7 @@ public class IkvmcTask extends Task {
 
 	public void setHome (File home) {
 
-		ikvmcFile = new File (new File (home, "bin"), IKVMC_PROC_NAME);
+		ikvmcFile = new File (home, IKVMC_PROC_NAME);
 
 		if ( !ikvmcFile.exists())
 			throw new IllegalArgumentException ("Path specified by 'home' attribute does not contain " + IKVMC_PROC_NAME);
@@ -173,7 +174,7 @@ public class IkvmcTask extends Task {
 	}
 	
     private List<String> buildArguments() throws BuildException {
-    	List<String> result = new ArrayList<String>();
+    	List<String> result = new ArrayList<>();
 
 		String processName = (ikvmcFile == null) ? IKVMC_PROC_NAME : ikvmcFile.getAbsolutePath();
 		result.add(processName);
@@ -277,7 +278,7 @@ public class IkvmcTask extends Task {
     @SuppressWarnings("unchecked")
     private List<String> collectClassesJarsAndResources() {
         Resources filesToProcess = new Resources();
-        List<String> result = new ArrayList (filesToProcess.size());
+        List<String> result = new ArrayList<>(filesToProcess.size());
         filesToProcess.setProject(getProject());
         if (filesets == null)
             throw new BuildException("Specify files to process using nested <fileset> element");
@@ -286,7 +287,7 @@ public class IkvmcTask extends Task {
             filesToProcess.add(fileset);
         }
 
-        Iterator<FileResource> iter = (Iterator<FileResource>)filesToProcess.iterator();
+        Iterator<FileResource> iter = filesToProcess.iterator();
         while (iter.hasNext()) {
             appendClassOrJarOrResource(result, iter.next());
         }
@@ -324,6 +325,7 @@ public class IkvmcTask extends Task {
             process = p;
         }
 
+        @Override
         public void run() {
             process.destroy();
         }

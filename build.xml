@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE project>
 <project name="ant-ikvmc" default="test" basedir=".">
 
-    <!-- <property name="ikvm.home" location="C:\Java\ikvm-0.36.0.11.ORIGINAL\ikvm-0.36.0.11" /> -->
-	<property name="ikvm.home" location="..\IKVM-8.4.4-tools-net461-win7-x86" />
+	<property name="ikvm.home" location="../Install/IKVM-8.4.4-tools-net461-win7-x86" />
+	<property name="jre_home" location="/Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home" />
 
 
 	<property name="src" location="src" />
@@ -22,9 +23,10 @@
 
 	  <target name="compile"  description="Compiles sources">
 
-		<javac srcdir="${src}" destdir="${classes}" failonerror="true">
+		<javac srcdir="${src}" destdir="${classes}" failonerror="true" includeantruntime="false">
 		    <classpath>
-		        <pathelement location="${lib}/*"/>
+		        <pathelement location="${lib}/ant.jar"/>
+		    	<pathelement location="${jre_home}/lib/tools.jar"/>
 		    </classpath>
 		</javac>
 	  </target>
