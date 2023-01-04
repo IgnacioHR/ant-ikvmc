@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-ikvmc" default="test" basedir=".">
+
+    <!-- <property name="ikvm.home" location="C:\Java\ikvm-0.36.0.11.ORIGINAL\ikvm-0.36.0.11" /> -->
+	<property name="ikvm.home" location="..\IKVM-8.4.4-tools-net461-win7-x86" />
+
+
+	<property name="src" location="src" />
+	<property name="lib" location="lib" />
+	<property name="classes" location="classes" />
+	<property name="dist" location="dist" />
+	<property name="testout" location="testout" />
+
+
+	  <target name="clean" description="Cleans output">
+		<delete failonerror="no">
+		   <fileset dir="${classes}" includes="**/*.class"/>
+		   <fileset dir="${dist}" includes="*.jar"/>
+		   <fileset dir="${testout}" includes="*.*"/>
+		</delete>
+	  </target>
+
+	  <target name="compile"  description="Compiles sources">
+
+		<javac srcdir="${src}" destdir="${classes}" failonerror="true">
+		    <classpath>
+		        <pathelement location="${lib}/*"/>
+		    </classpath>
+		</javac>
+	  </target>
+
+	  <target name="jar" depends="compile" description="Generate jar">
+	  	<mkdir dir="${dist}"/>
+	    <jar destfile="${dist}\ant-ikvmc.jar">
+	        <fileset dir="${classes}">
+	            <include name="**/*.class"/>
+	        </fileset>
+	    </jar>
+	  </target>
+
+	  <target name="test" depends="jar">
+	  	<mkdir dir="${testout}"/>
+	  	<!-- MAP FILE -->
+		<property name="mapfile" location="${testout}/map.xml" />
+<!--
+		<javadoc>
+			<doclet name="net.ikvm.ant.IkvmcMapDoclet" path="${dist}/ant-ikvmc.jar">
+			   <param name="-out" value="${mapfile}"/>
+			</doclet>
+
+		    <packageset dir="src" defaultexcludes="yes">
+		      <include name="net/**"/>
+		    </packageset>
+ 	    </javadoc>
+
+-->
+
+	  	<!-- IKVMC -->
+		<taskdef name="ikvmc" classname="net.ikvm.ant.IkvmcTask" classpath="${dist}/ant-ikvmc.jar"/>
+		<property name="test.library" location="${testout}/test.dll" />
+		<property name="test.executable" location="${testout}/test.exe" />
+
+<!-- remap="${mapfile}" -->
+		<ikvmc target="exe" out="${test.executable}" home="${ikvm.home}" version="1.0.0.0" debug="true"
+
+			main="test.Hello">
+        	<fileset dir="${classes}">
+				<include name="**/*.class"/>
+        	</fileset>
+            <fileset dir="${lib}">
+                <include name="**/*.jar"/>
+            </fileset>
+        </ikvmc>
+
+	</target>
+
+</project>

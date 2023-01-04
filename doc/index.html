@@ -1,0 +1,268 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="style.css">
+<title>Ant task for IKVMC</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta http-equiv="Content-Language" content="en-us">
+</head>
+
+<body>
+
+<h2><a NAME="IKVMC"></a>Ant task for IKVMC</h2>
+
+<h3>Description</h3>
+
+
+<P>This Ant task provides Ant interface to <a href="http://www.ikvm.net/userguide/ikvmc.html">ikvmc</a>,
+a tool converts Java bytecode to .NET dll's and exe's. </P>
+
+<h3>Installation</h3>
+
+Download <a href="http://sourceforge.net/project/showfiles.php?group_id=229749"><code>ant-ikvmc.jar</code></a> and add the following line to your build.xml:
+
+<blockquote>
+<pre>
+&lt;taskdef name="ikvmc" classname="net.ikvm.ant.IkvmcTask" classpath="..path to ant-ikvmc.jar..."/&gt;
+</pre>
+</blockquote>
+
+<h3>Usage</h3>
+
+<P>If you familiar with <a href="http://www.ikvm.net/userguide/ikvmc.html">ikvmc</a> command line arguments, you will find task interface very simple.</p>
+
+<ul>
+<li>Simple options become task attributes. </li>
+<li>Repeatable options can be specified as nested elements. </li>
+<li>Compiled Java source files (class files, resources, and JAR files) are defined by nested <code>&lt;fileset&gt;</code> elements.</li>
+</ul>
+
+<p> The task was written for IKVM version 0.36. </p>
+
+<h3>Parameters</h3>
+
+<table BORDER=1 CELLSPACING=0 CELLPADDING=2 >
+  <tr>
+    <th VALIGN=TOP><b>Attribute</b></th>
+    <th VALIGN=TOP><b>Description</b></th>
+    <th ALIGN=CENTER VALIGN=TOP><b>Required</b></th>
+  </tr>
+
+  <tr>
+    <td VALIGN=TOP>assembly</td>
+    <td VALIGN=TOP>Optional assembly name (otherwise it will be derived from output file name)</td>
+    <td ALIGN=CENTER VALIGN=TOP>No</td>
+  </tr>
+  <tr>
+    <td VALIGN=TOP>out</td>
+    <td VALIGN=TOP>Correspnds to <tt>-out</tt> IKVMC.EXE argument. Specifies the name of the output file. Should have a .dll extension (if -target is library) or an .exe extension (if -target is exe or winexe). In most cases, if you omit this option, ikvmc will choose an output name based on the -target and the name of the input files. However, if you specify input files using wildcards, you must use this option to specify the output file.</td>
+    <td ALIGN=CENTER VALIGN=TOP>No</td>
+  </tr>
+  <tr>
+    <td VALIGN=TOP>classloader</td>
+
+    <td VALIGN=TOP>Specifies custom IKVM classloader for assembly. See <a href="http://www.google.com/search?hl=en&q=ikvmc+custom+classloader">more</a> before use.</td>
+    <td ALIGN=CENTER VALIGN=TOP>No</td>
+  </tr>
+
+  <tr>
+    <td VALIGN=TOP>debug</td>
+    <td VALIGN=TOP>When true, Generates debugging information in the output providing that classes are compiled with debug info.</td>
+    <td ALIGN=CENTER VALIGN=TOP>No</td>
+  </tr>
+
+  <tr>
+    <td VALIGN=TOP>home</td>
+
+    <td VALIGN=TOP>Specifies root directory where IKVM is installed (For example <tt>C:\IKVM-0.36.0.11</tt>). Must be supplied if <code>ikvmc.exe</exe> is not in your PATH.
+    </td>
+    <td ALIGN=CENTER VALIGN=TOP>No (see desc.)</td>
+  </tr>
+
+  <tr>
+    <td VALIGN=TOP>keyfile</td>
+    <td VALIGN=TOP>Uses keyfilename to sign the resulting assembly</td>
+    <td ALIGN=CENTER VALIGN=TOP>No</td>
+  </tr>
+
+  <tr>
+    <td VALIGN=TOP>main</td>
+    <td VALIGN=TOP>Fully qualified name of Java main class. Used when target is "exe" and "winexe".</td>
+    <td ALIGN=CENTER VALIGN=TOP>No</td>
+  </tr>
+
+  <tr>
+    <td VALIGN=TOP>nojni</td>
+    <td VALIGN=TOP>Do not generate JNI stub for native methods</td>
+    <td ALIGN=CENTER VALIGN=TOP>No</td>
+  </tr>
+
+  <tr>
+    <td VALIGN=TOP>srcpath</td>
+    <td VALIGN=TOP>Specifies the location of source code. Use with debug="true".</td>
+    <td ALIGN=CENTER VALIGN=TOP>No</td>
+  </tr>
+
+  <tr>
+    <td VALIGN=TOP>target</td>
+    <td VALIGN=TOP>Target assembly type. Supported values are <code>exe, winexe, library, module</code></td>
+    <td ALIGN=CENTER VALIGN=TOP>No, default is "library"</td>
+  </tr>
+
+  <tr>
+    <td VALIGN=TOP>verbose</td>
+    <td VALIGN=TOP>When "true" produces extra output. Usefull for debugging.</td>
+    <td ALIGN=CENTER VALIGN=TOP>No</td>
+  </tr>
+
+  <tr>
+    <td VALIGN=TOP>version</td>
+    <td VALIGN=TOP>Assembly version in the following format: M.m.b.r [major.minor.build.revision]</td>
+    <td ALIGN=CENTER VALIGN=TOP>No</td>
+  </tr>
+
+  <tr>
+    <td VALIGN=TOP>&nbsp;</td>
+    <td VALIGN=TOP>Use nested <a href="#arg">&lt;arg&gt;</a> elements to define IKVMC arguments not listed above.</td>
+    <td ALIGN=CENTER VALIGN=TOP>No</td>
+  </tr>
+
+</table>
+
+<p>For more information see <a href="http://www.ikvm.net/userguide/ikvmc.html">ikvmc</a> user's guide or run ikvmc.exe with no arguments.</a>
+
+<h3><a name="nested">Nested Elements</a></h3>
+
+<p><code>ikvmc</code> supports the following nested elements:
+
+<h4><a name="fileset">fileset</a></h4>
+
+<p>Ant <code><a href="http://ant.apache.org/manual/CoreTypes/fileset.html">FileSet</a></code> that specifies input Java classes, resources, and JAR files.
+Any fileset element that doesn't match one of (*.class, *.jar, *.zip) is considered as a resource. </p>
+<p>This element is required. You can specify multiple <code>fileset</code> elements, with different base directories.</p>
+
+<blockquote>
+<pre>
+&lt;fileset dir="lib"&gt;
+    &lt;include name="**/*.jar"/&gt;
+&lt;/fileset&gt;
+</pre>
+</blockquote>
+
+
+<h4><a name="module">reference</a></h4>
+
+<P>If your Java code uses .NET API's, specify the dll's using this option. Optional element.</P>
+<blockquote>
+<pre>
+&lt;reference path="${ikvm.home}/bin/IKVM.OpenJDK.ClassLibrary.dll"/&gt;
+</pre>
+</blockquote>
+
+
+<h4><a name="resource">resource</a></h4>
+
+<P>Each specified resource element references a Java resource to be included into output assembly. For example:</P>
+<blockquote>
+<pre>
+&lt;resource name="/logs/logging.properties" path="${builddir}/logging.properties"/&gt;
+</pre>
+</blockquote>
+
+
+<h4><a name="arg">arg</a></h4>
+
+<P>Optional element that defines ikvmc arguments that are not yet supported as attributes. For example, the following element appends <code>-apartment:sta</code> to ikvmc's command line:</P>
+<blockquote>
+<pre>
+&lt;arg value="-apartment:sta"/&gt;
+</pre>
+</blockquote>
+
+
+<h4><a name="outputfilter">outputfilter</a></h4>
+
+<P>Optional element that applies filters to IKVMC output. Filters are defined as sub-elements. Currently supported filters:
+<ul>
+<li>contains - suppress any line that contains given text;</li>
+<li>wildcard - suppress any line matches with given text that may contain '*' as wild card character;</li>
+<li>regex - suppress any line matches with given <a href='http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html'>regular expression</a>.</li>
+</ul>
+You can specify as many output filters as you want. For example:
+</P>
+<blockquote>
+<pre>
+&nbsp;&lt;ikvmc target="library" ...
+&nbsp;&nbsp;&nbsp;...
+&nbsp;&nbsp;&nbsp;&lt;outputfilter&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;contains&gt;class is already available in referenced assembly "IKVM.OpenJDK.ClassLibrary&lt;/contains&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;contains&gt;net.sf.cglib.&lt;/contains&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;regex&gt;^Warning IKVMC0109: class "org[.]spring[.].+$&lt;/regex&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;wildcard&gt;*(missing class "org.*&lt;/wildcard&gt;
+&nbsp;&nbsp;&nbsp;&lt;/outputfilter&gt;
+&nbsp;&lt;/ikvmc&gt;
+</pre>
+</blockquote>
+
+<p>Please be aware that your filters may suppress IKVMC error diagnostic. </p>
+
+
+<h3>Complete Examples</h3>
+
+
+<blockquote>
+<pre>
+&nbsp;&lt;ikvmc target="exe" out="hello.exe" home="c:/ikvm-0.36.0.11" version="1.0.0.0" debug="true" main="net.sf.ant-ikvmc.Hello"&gt;
+&nbsp;&nbsp;&nbsp;&lt;fileset dir="${build}"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;include name="**/*.class"/&gt;
+&nbsp;&nbsp;&nbsp;&lt;/fileset&gt;
+&nbsp;&nbsp;&nbsp;&lt;fileset dir="${lib}"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;include name="**/*.jar"/&gt;
+&nbsp;&nbsp;&nbsp;&lt;/fileset&gt;
+&nbsp;&lt;/ikvmc&gt;
+</pre>
+</blockquote>
+
+<p>The above example creates Windows console executable <code>hello.exe</code>.
+This executable that is generated from Java class <tt>net.sf.ant-ikvmc.Hello</tt>.
+It contains all java classes compiled into directory referenced by <tt>build</tt> variable and libraries that reside under directory referenced by <tt>lib</tt> variable.
+</p>
+
+
+<blockquote>
+<pre>
+&nbsp;&lt;property name="ikvm.home" location="c:/ikvm-0.36.0.11"&gt;
+&nbsp;
+&nbsp;&lt;ikvmc target="library" out="${dotnet.out}/uhfclient.dll" home="${ikvm.home}" version="1.0.0.0" debug="true"  verbose="true"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;reference path="${dotnet.out}/uhfc-3rd-party.dll"/&gt;
+&nbsp;&nbsp;&nbsp;&lt;fileset dir="${classes}" includes="${uhfdll.resources}"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;include name="**/jaxb.index"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;include name="**/package-info.class"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;exclude name="**/*.vpp"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;exclude name="**/*.txt"/&gt;
+&nbsp;&nbsp;&nbsp;&lt;/fileset&gt;
+&nbsp;&lt;/ikvmc&gt;
+</pre>
+</blockquote>
+
+<p>The above example shows how to define detailed filters for input files as well as a reference to external module.</p>
+
+
+<br/>
+<hr/>
+
+Feedback can be posted on <a href='http://sourceforge.net/forum/forum.php?forum_id=829995'>Help forum</a>.
+
+Sources are available <a href="http://ant-ikvmc.svn.sourceforge.net/viewvc/ant-ikvmc/src/net/ikvm/ant/">on SourceForge SVN server</a>.
+
+This small open source project is in public domain. Created by <a href='http://andy-malakov.blogspot.com/'>Andy Malakov</a>.
+
+
+
+
+</body>
+
+</html>
+
+
