@@ -161,7 +161,7 @@ public class IkvmcTask extends Task {
 
 	public void setHome (File home) {
 
-		ikvmcFile = new File (home, IKVMC_PROC_NAME);
+		ikvmcFile = new File (new File (home, "bin"), IKVMC_PROC_NAME);
 
 		if ( !ikvmcFile.exists())
 			throw new IllegalArgumentException ("Path specified by 'home' attribute does not contain " + IKVMC_PROC_NAME);
